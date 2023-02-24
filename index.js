@@ -17,6 +17,8 @@
  * 3. Add your VERIFY_TOKEN and PAGE_ACCESS_TOKEN to your environment vars
  */
 
+const { handleTextMessage } = require('./src/service/TextMessage');
+
 // Use dotenv to read .env vars into Node
 require('dotenv').config();
 
@@ -87,7 +89,8 @@ app.post('/webhook', (req, res) => {
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
       if (webhookEvent.message) {
-        handleMessage(senderPsid, webhookEvent.message);
+        //handleMessage(senderPsid, webhookEvent.message);
+        handleTextMessage(webhookEvent);
       } else if (webhookEvent.postback) {
         handlePostback(senderPsid, webhookEvent.postback);
       }
