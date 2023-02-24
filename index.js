@@ -110,9 +110,22 @@ function handleMessage(senderPsid, receivedMessage) {
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
-    response = {
-      'text': `You sent the message: '${receivedMessage.text}'. Now send me an attachment!`
-    };
+    if(receivedMessage.text === "danh sach san pham"){
+      response = {
+        'text': `Danh sach san pham cua chung toi la dong trung ha thao`
+      };
+    }
+    else if (receivedMessage.text === "ten cua ban la gi"){
+      response = {
+        'text': `Ten cua toi la hai`
+      };
+    }
+    else{
+      response = {
+        'text': `Cam on ban, chung toi se lien he voi ban trong thoi gian som nhat`
+      };
+    }
+   
   } else if (receivedMessage.attachments) {
 
     // Get the URL of the message attachment
