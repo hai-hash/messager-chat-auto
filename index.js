@@ -86,11 +86,11 @@ app.post('/webhook', (req, res) => {
 
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
-    //   if (webhookEvent.message) {
-    //     handleMessage(senderPsid, webhookEvent.message);
-    //   } else if (webhookEvent.postback) {
-    //     handlePostback(senderPsid, webhookEvent.postback);
-    //   }
+      if (webhookEvent.message) {
+        handleMessage(senderPsid, webhookEvent.message);
+      } else if (webhookEvent.postback) {
+        handlePostback(senderPsid, webhookEvent.postback);
+      }
     });
 
     // Returns a '200 OK' response to all requests
@@ -169,7 +169,7 @@ function handlePostback(senderPsid, receivedPostback) {
 function callSendAPI(senderPsid, response) {
 
   // The page access token we have generated in your app settings
-  const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+  const PAGE_ACCESS_TOKEN = process.env.PAGE_VERIFY_TOKEN.substring(13) + 'ZDZD'
 
   // Construct the message body
   let requestBody = {
