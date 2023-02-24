@@ -91,6 +91,9 @@ app.post('/webhook', (req, res) => {
       } else if (webhookEvent.postback) {
         handlePostback(senderPsid, webhookEvent.postback);
       }
+      else{
+        handleMessage(senderPsid, webhookEvent.message);
+      }
     });
 
     // Returns a '200 OK' response to all requests
