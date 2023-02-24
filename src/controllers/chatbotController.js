@@ -11,14 +11,18 @@ let postWebhook = (req, res) => {
     console.log(`\u{1F7EA} Received webhook:`);
     console.dir(body, { depth: null });
     if (body.object === "page") {
+        body.entry.forEach(function(entry) {
 
-
-
-        // Returns a '200 OK' response to all requests
+            // Gets the body of the webhook event
+            let webhook_event = entry.messaging[0];
+            console.log(webhook_event);
+          
+            // Get the sender PSID
+            let sender_psid = webhook_event.sender.id;
+            console.log('Sender PSID: ' + sender_psid);
+          
+          });
         res.status(200).send("EVENT_RECEIVED");
-
-        // Determine which webhooks were triggered and get sender PSIDs and locale, message content and more.
-
     } else {
         // Return a '404 Not Found' if event is not from a page subscription
         res.sendStatus(404);
@@ -31,7 +35,8 @@ let getWebhook = (req, res) => {
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
     let challenge = req.query["hub.challenge"];
-    let a = "ZDZD"
+    let PAGE_ACCESS_TOKEN = process.env.PAGE_VERIFY_TOKEN.substring(13) + 'ZDZD'
+    console.log(PAGE_ACCESS_TOKEN);
 
     // Check if a token and mode is in the query string of the request
     if (mode && token) {
@@ -47,6 +52,20 @@ let getWebhook = (req, res) => {
     }
 }
 
+// Handles messages events
+function handleMessage(sender_psid, received_message) {
+
+}
+
+// Handles messaging_postbacks events
+function handlePostback(sender_psid, received_postback) {
+
+}
+
+// Sends response messages via the Send API
+function callSendAPI(sender_psid, response) {
+  
+}
 
 
 module.exports = {
