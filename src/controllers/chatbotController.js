@@ -1,5 +1,10 @@
 require("dotenv").config();
 
+
+let getHomePage = (req, res) => {
+    return res.send("Khong phan su mien vao");
+}
+
 let postWebhook = (req, res) => {
     let body = req.body;
     if (body && body.object === "page") {
