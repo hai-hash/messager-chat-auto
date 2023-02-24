@@ -110,19 +110,26 @@ function handleMessage(senderPsid, receivedMessage) {
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
-    if(receivedMessage.text === "danh sach san pham"){
+
+    if(receivedMessage.text === "1"){
       response = {
-        'text': `Danh sach san pham cua chung toi la dong trung ha thao`
+        'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
       };
     }
-    else if (receivedMessage.text === "ten cua ban la gi"){
+    else if (receivedMessage.text === "2"){
       response = {
-        'text': `Ten cua toi la hai`
+        'text': `Bạn vui lòng cho chúng mình biết mã đơn hàng của bạn với cú pháp : CodeOrder#madonhang`
+      };
+    }
+    else if(receivedMessage.text === "3"){
+      response = {
+        'text': `Bạn vui lòng đặt hàng với cấu trúc: Name: tên người mua \n NumberPhone: số điện thoại \n Product: sản phẩm muốn mua trên danh sách sản phẩm`
       };
     }
     else{
       response = {
-        'text': `Cam on ban, chung toi se lien he voi ban trong thoi gian som nhat`
+        'text': `Cảm ơn bạn đã liên hệ với chúng tôi \n. Ngoài ra bạn còn muốn biến gì nữa không ? \n 1. Danh sách sản phẩm \n 2. Trang thái đơn hàng 
+        \n 3. Đặt hàng`
       };
     }
    
