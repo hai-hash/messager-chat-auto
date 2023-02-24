@@ -1,9 +1,8 @@
 import { genNuxMessage } from "./commonFunction";
 
 export function handleTextMessage(webhookEvent){
-    let event = this.webhookEvent;
-    let greeting = firstEntity(event.message.nlp, "greetings");
-    let message = event.message.text.trim().toLowerCase();
+    let greeting = firstEntity(webhookEvent.message.nlp, "greetings");
+    let message = webhookEvent.message.text.trim().toLowerCase();
     let response;
     if (
         (greeting && greeting.confidence > 0.8) ||
