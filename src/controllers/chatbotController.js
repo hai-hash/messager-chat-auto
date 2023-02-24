@@ -1,16 +1,8 @@
 require("dotenv").config();
 
-
-let getHomePage = (req, res) => {
-    return res.send("Khong phan su mien vao");
-}
-
 let postWebhook = (req, res) => {
     let body = req.body;
-
-    console.log(`\u{1F7EA} Received webhook:`);
-    console.dir(body, { depth: null });
-    if (body.object === "page") {
+    if (body && body.object === "page") {
         body.entry.forEach(function(entry) {
 
             // Gets the body of the webhook event
@@ -24,7 +16,6 @@ let postWebhook = (req, res) => {
           });
         res.status(200).send("EVENT_RECEIVED");
     } else {
-        // Return a '404 Not Found' if event is not from a page subscription
         res.sendStatus(404);
     }
 }
