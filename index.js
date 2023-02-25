@@ -91,6 +91,7 @@ app.post('/webhook', (req, res) => {
       // pass the event to the appropriate handler function
       if(webhookEvent.read){
         console.log("User was read")
+        return;
       }
       if (webhookEvent.message) {
         handleMessage(senderPsid, webhookEvent.message);
@@ -121,7 +122,6 @@ function handleMessage(senderPsid, receivedMessage) {
     // will be added to the body of your request to the Send API
     if(receivedMessage.text.includes("start over")){
       response = genNuxMessage();
-      console.log("Message send ", response)
     }
 
     else if(receivedMessage.text === "1"){
@@ -211,6 +211,8 @@ function callSendAPI(senderPsid, response) {
     },
     'message': response
   };
+
+  console.log("Message send request body", requestBody)
 
   // Send the HTTP request to the Messenger Platform
   request({
