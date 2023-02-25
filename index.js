@@ -135,12 +135,12 @@ function createResponseButton(){
 
 function createResponseQuickReply(requestMessage, listQuickReplies){
   let response = {
-    "text": requestMessage,
-    "quick_replies": [],
+    text: requestMessage,
+    quick_replies: [],
   }
   if(listQuickReplies && listQuickReplies.length > 0){
     listQuickReplies.forEach(quickReply => {
-      response["quick_replies"].push({
+      response.quick_replies.push({
         content_type: "text",
         title: quickReply["title"],
         payload: quickReply["payload"]
