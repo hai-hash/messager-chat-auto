@@ -17,6 +17,7 @@
  * 3. Add your VERIFY_TOKEN and PAGE_ACCESS_TOKEN to your environment vars
  */
 
+const { listMenu } = require('./src/constant/constant');
 const { genNuxMessage } = require('./src/service/commonFunction');
 const { handleTextMessage } = require('./src/service/TextMessage');
 
@@ -201,42 +202,12 @@ function handleMessage(senderPsid, receivedMessage) {
   }
   else if (receivedMessage && receivedMessage.text) {
     if (receivedMessage.text.includes("start over")) {
-      const listQuickReplies = [{
-        "title": "Danh sách sản phẩm",
-        "payload": "LIST_PRODUCT"
-      },
-      {
-        "title": "Trò chuyện với nhân viên",
-        "payload": "CONNECTION_NV"
-      },
-      {
-        "tile": "Trạng thái đơn hàng",
-        "payload": "STATUS_ORDER"
-      }
-      ]
+      const listQuickReplies = listMenu;
       response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?", listQuickReplies);
     }
-
-    else if (receivedMessage.text === "1") {
-      response = {
-        'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
-      };
-    }
-    else if (receivedMessage.text === "2") {
-      response = {
-        'text': `Bạn vui lòng cho chúng mình biết mã đơn hàng của bạn với cú pháp : CodeOrder#madonhang`
-      };
-    }
-    else if (receivedMessage.text === "3") {
-      response = {
-        'text': `Bạn vui lòng đặt hàng với cấu trúc: Name: tên người mua \n NumberPhone: số điện thoại \n Product: sản phẩm muốn mua trên danh sách sản phẩm`
-      };
-    }
     else {
-      response = {
-        'text': `Cảm ơn bạn đã liên hệ với chúng tôi \n. Ngoài ra bạn còn muốn biến gì nữa không ? \n 1. Danh sách sản phẩm \n 2. Trang thái đơn hàng 
-        \n 3. Đặt hàng`
-      };
+      const listQuickReplies = listMenu;
+      response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?", listQuickReplies);
     }
 
   } else if (receivedMessage && receivedMessage.attachments) {
@@ -269,11 +240,9 @@ function handleMessage(senderPsid, receivedMessage) {
       }
     };
   }
-  // else{
-  //   response = {
-  //     'text': `Chúng tôi không biến bạn muốn gì ?`
-  //   };
-  // }
+  else{
+    return;
+  }
 
   // Send the response message
   callSendAPI(senderPsid, response);
