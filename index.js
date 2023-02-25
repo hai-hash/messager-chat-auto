@@ -133,23 +133,21 @@ function createResponseButton(){
   };
 }
 
-function createResponseQuickReply(){
-  return response = {
-    "text": "Pick a color:",
-    "quick_replies":[
-      {
-        "content_type":"text",
-        "title":"Red",
-        "payload":"<POSTBACK_PAYLOAD>",
-        "image_url":"http://example.com/img/red.png"
-      },{
-        "content_type":"text",
-        "title":"Green",
-        "payload":"<POSTBACK_PAYLOAD>",
-        "image_url":"http://example.com/img/green.png"
-      }
-    ]
+function createResponseQuickReply(requestMessage, listQuickReplies){
+  let response = {
+    "text": requestMessage,
+    "quick_relies": [],
   }
+  if(listQuickReplies && listQuickReplies.length > 0){
+    listQuickReplies.forEach(quickReply => {
+      response["quick_replies"].push({
+        content_type: "text",
+        title: quickReply["title"],
+        payload: quickReply["payload"]
+      });
+    });
+  }
+  return response;
 }
 
 // Handles messages events
@@ -157,10 +155,21 @@ function handleMessage(senderPsid, receivedMessage) {
   let response;
   // Checks if the message contains text
   if (receivedMessage && receivedMessage.text) {
-    // Create the payload for a basic text message, which
-    // will be added to the body of your request to the Send API
     if(receivedMessage.text.includes("start over")){
-      response = createResponseQuickReply();
+      const listQuickReplies = [{
+        "title": "Danh sách sản phẩm",
+        "payload": "LIST_PRODUCT"
+      },
+      {
+        "title": "Trò chuyện với nhân viên",
+        "payload": "CONNECTION_NV"
+      },
+      {
+        "tile": "Trạng thái đơn hàng",
+        "payload": "STATUS_ORDER"
+      }
+    ]
+      response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?",listQuickReplies);
     }
 
     else if(receivedMessage.text === "1"){
