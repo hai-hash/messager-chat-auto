@@ -134,19 +134,30 @@ function createResponseButton(){
 }
 
 function createResponseQuickReply(requestMessage, listQuickReplies){
+
   let response = {
     "text": requestMessage,
-    "quick_replies": [],
+    "quick_replies": [
+      {"content_type": "text",
+      "title": "danh sách sản phẩm",
+      "payload": "LIST_PRODUCT"},
+      {"content_type": "text",
+      "title": "trò chuyện với nhân viên",
+      "payload": "CHAT_NV"},
+      {"content_type": "text",
+      "title": "Trạng thái đơn hàng",
+      "payload": "ORDER_STATUS"},
+    ],
   }
-  if(listQuickReplies && listQuickReplies.length > 0){
-    for (let quickReply of listQuickReplies) {
-      response["quick_replies"].push({
-        "content_type": "text",
-        "title": quickReply["title"],
-        "payload": quickReply["payload"]
-      });
-    };
-  }
+  // if(listQuickReplies && listQuickReplies.length > 0){
+  //   listQuickReplies.forEach(quickReply => {
+  //     response["quick_replies"].push({
+  //       "content_type": "text",
+  //       "title": quickReply["title"],
+  //       "payload": quickReply["payload"]
+  //     });
+  //   });
+  // }
   return response;
 }
 
