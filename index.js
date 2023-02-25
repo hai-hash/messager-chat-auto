@@ -133,6 +133,25 @@ function createResponseButton(){
   };
 }
 
+function createResponseQuickReply(){
+  return response = {
+    "text": "Pick a color:",
+    "quick_replies":[
+      {
+        "content_type":"text",
+        "title":"Red",
+        "payload":"<POSTBACK_PAYLOAD>",
+        "image_url":"http://example.com/img/red.png"
+      },{
+        "content_type":"text",
+        "title":"Green",
+        "payload":"<POSTBACK_PAYLOAD>",
+        "image_url":"http://example.com/img/green.png"
+      }
+    ]
+  }
+}
+
 // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
   let response;
@@ -141,7 +160,7 @@ function handleMessage(senderPsid, receivedMessage) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
     if(receivedMessage.text.includes("start over")){
-      response = createResponseButton();
+      response = createResponseQuickReply();
     }
 
     else if(receivedMessage.text === "1"){
