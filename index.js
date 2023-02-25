@@ -18,8 +18,9 @@
  */
 
 const { listMenu } = require('./src/constant/constant');
-const { genNuxMessage } = require('./src/service/commonFunction');
-const { handleTextMessage } = require('./src/service/TextMessage');
+const { handleMessageAttachments } = require('./src/service/Attachments');
+const { handleMessageNomal } = require('./src/service/MessageNomal');
+const { handleQuickReply } = require('./src/service/QuickReply');
 
 // Use dotenv to read .env vars into Node
 require('dotenv').config();
@@ -73,17 +74,11 @@ app.get('/webhook', (req, res) => {
 // Creates the endpoint for your webhook
 app.post('/webhook', (req, res) => {
   let body = req.body;
-
-  // Checks if this is an event from a page subscription
   if (body.object === 'page') {
-
-    // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(function (entry) {
-
-      // Gets the body of the webhook event
+    body.entry.forEach(async function (entry) {
       let webhookEvent = entry.messaging[0];
+    
       console.log(webhookEvent);
-
       // Get the sender PSID
       let senderPsid = webhookEvent.sender.id;
       console.log('Sender PSID: ' + senderPsid);
@@ -94,9 +89,9 @@ app.post('/webhook', (req, res) => {
         console.log("User was read")
         return;
       }
+
       if (webhookEvent.message) {
         handleMessage(senderPsid, webhookEvent.message);
-
       }
       else if (webhookEvent.postback) {
         handlePostback(senderPsid, webhookEvent.postback);
@@ -105,12 +100,8 @@ app.post('/webhook', (req, res) => {
         handleMessage(senderPsid, webhookEvent.message);
       }
     });
-
-    // Returns a '200 OK' response to all requests
     res.status(200).send('EVENT_RECEIVED');
   } else {
-
-    // Returns a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
   }
 });
@@ -135,117 +126,21 @@ function createResponseButton() {
   };
 }
 
-function createResponseQuickReply(requestMessage, listQuickReplies) {
-
-  let response = {
-    "text": requestMessage,
-    "quick_replies": [
-      {
-        "content_type": "text",
-        "title": "danh sách sản phẩm",
-        "payload": "LIST_PRODUCT"
-      },
-      {
-        "content_type": "text",
-        "title": "trò chuyện với nhân viên",
-        "payload": "CHAT_NV"
-      },
-      {
-        "content_type": "text",
-        "title": "Trạng thái đơn hàng",
-        "payload": "ORDER_STATUS"
-      },
-    ],
-  }
-  // if(listQuickReplies && listQuickReplies.length > 0){
-  //   listQuickReplies.forEach(quickReply => {
-  //     response["quick_replies"].push({
-  //       "content_type": "text",
-  //       "title": quickReply["title"],
-  //       "payload": quickReply["payload"]
-  //     });
-  //   });
-  // }
-  return response;
-}
-
-
 
 // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
   let response;
-  // Checks if the message contains text
-  if(receivedMessage && receivedMessage.quick_reply){
-    const payload = receivedMessage.quick_reply.payload;
-    switch (payload) {
-      case "LIST_PRODUCT":
-        response = {
-          'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
-        };
-        break;
-      case "CHAT_NV":
-        response = {
-          'text': `Nhân viên bán hàng sẽ sớm liên hệ với bạn`
-        };
-        break;
-      case "ORDER_STATUS":
-        response = {
-          'text': `Đơn hàng của bạn còn 5 ngày nữa sẽ đến`
-        };
-        break;
-      default:
-        response = {
-          'text': `Chúng tôi không thể xác định sự lựa chọn của bạn`
-        };
-        break;
-    }
+  if (receivedMessage && receivedMessage.quick_reply) {
+    response = handleQuickReply(receivedMessage);
   }
   else if (receivedMessage && receivedMessage.text) {
-    if (receivedMessage.text.includes("start over")) {
-      const listQuickReplies = listMenu;
-      response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?", listQuickReplies);
-    }
-    else {
-      response = {
-        'text': `mew mew mew mew`
-      };
-    }
-
+    response = handleMessageNomal(receivedMessage);
   } else if (receivedMessage && receivedMessage.attachments) {
-
-    // Get the URL of the message attachment
-    let attachmentUrl = receivedMessage.attachments[0].payload.url;
-    response = {
-      'attachment': {
-        'type': 'template',
-        'payload': {
-          'template_type': 'generic',
-          'elements': [{
-            'title': 'Is this the right picture?',
-            'subtitle': 'Tap a button to answer.',
-            'image_url': attachmentUrl,
-            'buttons': [
-              {
-                'type': 'postback',
-                'title': 'Yes!',
-                'payload': 'yes',
-              },
-              {
-                'type': 'postback',
-                'title': 'No!',
-                'payload': 'no',
-              }
-            ],
-          }]
-        }
-      }
-    };
+    response = handleMessageAttachments(receivedMessage);
   }
-  else{
+  else {
     return;
   }
-
-  // Send the response message
   callSendAPI(senderPsid, response);
 }
 
