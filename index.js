@@ -18,7 +18,7 @@
  */
 
 const { genNuxMessage } = require('./src/service/commonFunction');
-const { firstEntity } = require('./src/service/TextMessage');
+const { handleTextMessage } = require('./src/service/TextMessage');
 
 // Use dotenv to read .env vars into Node
 require('dotenv').config();
@@ -90,7 +90,7 @@ app.post('/webhook', (req, res) => {
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
       if (webhookEvent.message) {
-        handleMessage(senderPsid, webhookEvent)
+        handleMessage(senderPsid, webhookEvent.message);
         
       } else if (webhookEvent.postback) {
         handlePostback(senderPsid, webhookEvent.postback);
@@ -110,22 +110,17 @@ app.post('/webhook', (req, res) => {
 });
 
 // Handles messages events
-function handleMessage(senderPsid, webhookEvent) {
+function handleMessage(senderPsid, receivedMessage) {
   let response;
-  let receivedMessage = webhookEvent.message;
-
   // Checks if the message contains text
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
-    let greeting = firstEntity(webhookEvent.message.nlp, "greetings");
-    if (
-      (greeting && greeting.confidence > 0.8) ||
-      receivedMessage.text.includes("start over")
-    ) {
+    if(receivedMessage.text.includes("start over")){
       response = genNuxMessage();
     }
-    else if(receivedMessage.text === "1"){
+
+    if(receivedMessage.text === "1"){
       response = {
         'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
       };
