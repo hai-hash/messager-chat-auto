@@ -77,7 +77,7 @@ app.post('/webhook', (req, res) => {
   if (body.object === 'page') {
 
     // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(function(entry) {
+    body.entry.forEach(function (entry) {
 
       // Gets the body of the webhook event
       let webhookEvent = entry.messaging[0];
@@ -89,17 +89,18 @@ app.post('/webhook', (req, res) => {
 
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
-      if(webhookEvent.read){
+      if (webhookEvent.read) {
         console.log("User was read")
         return;
       }
       if (webhookEvent.message) {
         handleMessage(senderPsid, webhookEvent.message);
-        
-      } else if (webhookEvent.postback) {
+
+      }
+      else if (webhookEvent.postback) {
         handlePostback(senderPsid, webhookEvent.postback);
       }
-      else{
+      else {
         handleMessage(senderPsid, webhookEvent.message);
       }
     });
@@ -113,40 +114,46 @@ app.post('/webhook', (req, res) => {
   }
 });
 
-function createResponseButton(){
+function createResponseButton() {
   return response = {
     'attachment': {
       'type': 'template',
       'payload': {
         'template_type': 'button',
-        'text':'what do you want to next ?',
-        'buttons':[
+        'text': 'what do you want to next ?',
+        'buttons': [
           {
-            "type":"postback",
-            'title':"Yes!",
-            "payload":'yes'
+            "type": "postback",
+            'title': "Yes!",
+            "payload": 'yes'
           }
-         
+
         ]
       }
     }
   };
 }
 
-function createResponseQuickReply(requestMessage, listQuickReplies){
+function createResponseQuickReply(requestMessage, listQuickReplies) {
 
   let response = {
     "text": requestMessage,
     "quick_replies": [
-      {"content_type": "text",
-      "title": "danh sách sản phẩm",
-      "payload": "LIST_PRODUCT"},
-      {"content_type": "text",
-      "title": "trò chuyện với nhân viên",
-      "payload": "CHAT_NV"},
-      {"content_type": "text",
-      "title": "Trạng thái đơn hàng",
-      "payload": "ORDER_STATUS"},
+      {
+        "content_type": "text",
+        "title": "danh sách sản phẩm",
+        "payload": "LIST_PRODUCT"
+      },
+      {
+        "content_type": "text",
+        "title": "trò chuyện với nhân viên",
+        "payload": "CHAT_NV"
+      },
+      {
+        "content_type": "text",
+        "title": "Trạng thái đơn hàng",
+        "payload": "ORDER_STATUS"
+      },
     ],
   }
   // if(listQuickReplies && listQuickReplies.length > 0){
@@ -161,12 +168,39 @@ function createResponseQuickReply(requestMessage, listQuickReplies){
   return response;
 }
 
+
+
 // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
   let response;
   // Checks if the message contains text
-  if (receivedMessage && receivedMessage.text) {
-    if(receivedMessage.text.includes("start over")){
+  if(receivedMessage && receivedMessage.quick_reply){
+    const payload = receivedMessage.quick_reply.payload;
+    switch (payload) {
+      case "LIST_PRODUCT":
+        response = {
+          'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
+        };
+        break;
+      case "CONNECTION_NV":
+        response = {
+          'text': `Nhân viên bán hàng sẽ sớm liên hệ với bạn`
+        };
+        break;
+      case "STATUS_ORDER":
+        response = {
+          'text': `Đơn hàng của bạn còn 5 ngày nữa sẽ đến`
+        };
+        break;
+      default:
+        response = {
+          'text': `Chúng tôi không thể xác định sự lựa chọn của bạn`
+        };
+        break;
+    }
+  }
+  else if (receivedMessage && receivedMessage.text) {
+    if (receivedMessage.text.includes("start over")) {
       const listQuickReplies = [{
         "title": "Danh sách sản phẩm",
         "payload": "LIST_PRODUCT"
@@ -179,32 +213,32 @@ function handleMessage(senderPsid, receivedMessage) {
         "tile": "Trạng thái đơn hàng",
         "payload": "STATUS_ORDER"
       }
-    ]
-      response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?",listQuickReplies);
+      ]
+      response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?", listQuickReplies);
     }
 
-    else if(receivedMessage.text === "1"){
+    else if (receivedMessage.text === "1") {
       response = {
         'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
       };
     }
-    else if (receivedMessage.text === "2"){
+    else if (receivedMessage.text === "2") {
       response = {
         'text': `Bạn vui lòng cho chúng mình biết mã đơn hàng của bạn với cú pháp : CodeOrder#madonhang`
       };
     }
-    else if(receivedMessage.text === "3"){
+    else if (receivedMessage.text === "3") {
       response = {
         'text': `Bạn vui lòng đặt hàng với cấu trúc: Name: tên người mua \n NumberPhone: số điện thoại \n Product: sản phẩm muốn mua trên danh sách sản phẩm`
       };
     }
-    else{
+    else {
       response = {
         'text': `Cảm ơn bạn đã liên hệ với chúng tôi \n. Ngoài ra bạn còn muốn biến gì nữa không ? \n 1. Danh sách sản phẩm \n 2. Trang thái đơn hàng 
         \n 3. Đặt hàng`
       };
     }
-   
+
   } else if (receivedMessage && receivedMessage.attachments) {
 
     // Get the URL of the message attachment
@@ -233,6 +267,11 @@ function handleMessage(senderPsid, receivedMessage) {
           }]
         }
       }
+    };
+  }
+  else{
+    response = {
+      'text': `Chúng tôi không biến bạn muốn gì ?`
     };
   }
 
@@ -289,6 +328,6 @@ function callSendAPI(senderPsid, response) {
 }
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function() {
+var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
