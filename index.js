@@ -113,6 +113,26 @@ app.post('/webhook', (req, res) => {
   }
 });
 
+function createResponseButton(){
+  return response = {
+    'attachment': {
+      'type': 'template',
+      'payload': {
+        'template_type': 'button',
+        'text':'what do you want to next ?',
+        'buttons':[
+          {
+            "type":"postback",
+            'title':"Yes!",
+            "payload":'yes'
+          }
+         
+        ]
+      }
+    }
+  };
+}
+
 // Handles messages events
 function handleMessage(senderPsid, receivedMessage) {
   let response;
@@ -121,7 +141,7 @@ function handleMessage(senderPsid, receivedMessage) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
     if(receivedMessage.text.includes("start over")){
-      response = genNuxMessage();
+      response = createResponseButton();
     }
 
     else if(receivedMessage.text === "1"){
