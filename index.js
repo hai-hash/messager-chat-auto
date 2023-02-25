@@ -136,21 +136,17 @@ function createResponseButton(){
 function createResponseQuickReply(requestMessage, listQuickReplies){
   let response = {
     "text": requestMessage,
-    "quick_replies": [
-      {"content_type": "text",
-      "title": "danh sachs san pham",
-      "payload": "LIST_PRODUCT"}
-    ],
+    "quick_replies": [],
   }
-  // if(listQuickReplies && listQuickReplies.length > 0){
-  //   listQuickReplies.forEach(quickReply => {
-  //     response.quick_replies.push({
-  //       content_type: "text",
-  //       title: quickReply["title"],
-  //       payload: quickReply["payload"]
-  //     });
-  //   });
-  // }
+  if(listQuickReplies && listQuickReplies.length > 0){
+    for (let quickReply of listQuickReplies) {
+      response["quick_replies"].push({
+        "content_type": "text",
+        "title": quickReply["title"],
+        "payload": quickReply["payload"]
+      });
+    };
+  }
   return response;
 }
 
