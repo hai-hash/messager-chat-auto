@@ -1,4 +1,4 @@
-export function handleQuickReply(message){
+export function handleQuickReply(receivedMessage){
     let response;
     const payload = receivedMessage.quick_reply.payload;
     switch (payload) {
