@@ -183,12 +183,12 @@ function handleMessage(senderPsid, receivedMessage) {
           'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
         };
         break;
-      case "CONNECTION_NV":
+      case "CHAT_NV":
         response = {
           'text': `Nhân viên bán hàng sẽ sớm liên hệ với bạn`
         };
         break;
-      case "STATUS_ORDER":
+      case "ORDER_STATUS":
         response = {
           'text': `Đơn hàng của bạn còn 5 ngày nữa sẽ đến`
         };
@@ -206,8 +206,9 @@ function handleMessage(senderPsid, receivedMessage) {
       response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?", listQuickReplies);
     }
     else {
-      const listQuickReplies = listMenu;
-      response = createResponseQuickReply("Chúng tôi có thể giúp gì cho bạn ?", listQuickReplies);
+      response = {
+        'text': `mew mew mew mew`
+      };
     }
 
   } else if (receivedMessage && receivedMessage.attachments) {
