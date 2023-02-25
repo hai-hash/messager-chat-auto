@@ -89,6 +89,9 @@ app.post('/webhook', (req, res) => {
 
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
+      if(webhookEvent.read){
+        console.log("User was read")
+      }
       if (webhookEvent.message) {
         handleMessage(senderPsid, webhookEvent.message);
         
@@ -113,11 +116,12 @@ app.post('/webhook', (req, res) => {
 function handleMessage(senderPsid, receivedMessage) {
   let response;
   // Checks if the message contains text
-  if (receivedMessage.text) {
+  if (receivedMessage && receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
     if(receivedMessage.text.includes("start over")){
       response = genNuxMessage();
+      console.log("Message send ", response)
     }
 
     else if(receivedMessage.text === "1"){
@@ -142,7 +146,7 @@ function handleMessage(senderPsid, receivedMessage) {
       };
     }
    
-  } else if (receivedMessage.attachments) {
+  } else if (receivedMessage && receivedMessage.attachments) {
 
     // Get the URL of the message attachment
     let attachmentUrl = receivedMessage.attachments[0].payload.url;
