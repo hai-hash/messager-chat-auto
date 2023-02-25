@@ -75,32 +75,33 @@ app.get('/webhook', (req, res) => {
 app.post('/webhook', (req, res) => {
   let body = req.body;
   if (body.object === 'page') {
-    body.entry.forEach(async function (entry) {
-      let webhookEvent = entry.messaging[0];
-    
-      console.log(webhookEvent);
-      // Get the sender PSID
-      let senderPsid = webhookEvent.sender.id;
-      console.log('Sender PSID: ' + senderPsid);
-
-      // Check if the event is a message or postback and
-      // pass the event to the appropriate handler function
-      if (webhookEvent.read) {
-        console.log("User was read")
-        return;
-      }
-
-      if (webhookEvent.message) {
-        handleMessage(senderPsid, webhookEvent.message);
-      }
-      else if (webhookEvent.postback) {
-        handlePostback(senderPsid, webhookEvent.postback);
-      }
-      else {
-        handleMessage(senderPsid, webhookEvent.message);
-      }
-    });
     res.status(200).send('EVENT_RECEIVED');
+    body.entry.forEach(async function (entry) {
+      entry.messaging.forEach(async function (webhookEvent) {
+        // let webhookEvent = entry.messaging[0];
+        console.log(webhookEvent);
+        // Get the sender PSID
+        let senderPsid = webhookEvent.sender.id;
+        console.log('Sender PSID: ' + senderPsid);
+
+        // Check if the event is a message or postback and
+        // pass the event to the appropriate handler function
+        if (webhookEvent.read) {
+          console.log("User was read")
+          return;
+        }
+
+        if (webhookEvent.message) {
+          handleMessage(senderPsid, webhookEvent.message);
+        }
+        else if (webhookEvent.postback) {
+          handlePostback(senderPsid, webhookEvent.postback);
+        }
+        else {
+          handleMessage(senderPsid, webhookEvent.message);
+        }
+      })
+    });
   } else {
     res.sendStatus(404);
   }
