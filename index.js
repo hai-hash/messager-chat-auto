@@ -97,9 +97,6 @@ app.post('/webhook', (req, res) => {
         else if (webhookEvent.postback) {
           handlePostback(senderPsid, webhookEvent.postback);
         }
-        else {
-          handleMessage(senderPsid, webhookEvent.message);
-        }
       })
     });
   } else {
@@ -138,9 +135,6 @@ function handleMessage(senderPsid, receivedMessage) {
     response = handleMessageNomal(receivedMessage);
   } else if (receivedMessage && receivedMessage.attachments) {
     response = handleMessageAttachments(receivedMessage);
-  }
-  else {
-    return;
   }
   callSendAPI(senderPsid, response);
 }
