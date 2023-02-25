@@ -269,11 +269,11 @@ function handleMessage(senderPsid, receivedMessage) {
       }
     };
   }
-  else{
-    response = {
-      'text': `Chúng tôi không biến bạn muốn gì ?`
-    };
-  }
+  // else{
+  //   response = {
+  //     'text': `Chúng tôi không biến bạn muốn gì ?`
+  //   };
+  // }
 
   // Send the response message
   callSendAPI(senderPsid, response);
