@@ -120,7 +120,7 @@ function handleMessage(senderPsid, receivedMessage) {
       response = genNuxMessage();
     }
 
-    if(receivedMessage.text === "1"){
+    else if(receivedMessage.text === "1"){
       response = {
         'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
       };
