@@ -17,7 +17,8 @@
  * 3. Add your VERIFY_TOKEN and PAGE_ACCESS_TOKEN to your environment vars
  */
 
-const { handleTextMessage } = require('./src/service/TextMessage');
+const { genNuxMessage } = require('./src/service/commonFunction');
+const { firstEntity } = require('./src/service/TextMessage');
 
 // Use dotenv to read .env vars into Node
 require('dotenv').config();
@@ -89,8 +90,8 @@ app.post('/webhook', (req, res) => {
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
       if (webhookEvent.message) {
-        //handleMessage(senderPsid, webhookEvent.message);
-        handleTextMessage(webhookEvent);
+        handleMessage(senderPsid, webhookEvent)
+        
       } else if (webhookEvent.postback) {
         handlePostback(senderPsid, webhookEvent.postback);
       }
@@ -109,15 +110,22 @@ app.post('/webhook', (req, res) => {
 });
 
 // Handles messages events
-function handleMessage(senderPsid, receivedMessage) {
+function handleMessage(senderPsid, webhookEvent) {
   let response;
+  let receivedMessage = webhookEvent.message;
 
   // Checks if the message contains text
   if (receivedMessage.text) {
     // Create the payload for a basic text message, which
     // will be added to the body of your request to the Send API
-
-    if(receivedMessage.text === "1"){
+    let greeting = firstEntity(webhookEvent.message.nlp, "greetings");
+    if (
+      (greeting && greeting.confidence > 0.8) ||
+      message.includes("start over")
+    ) {
+      response = genNuxMessage();
+    }
+    else if(receivedMessage.text === "1"){
       response = {
         'text': `Danh sách sản phẩm \n 1. Đông trùng hạ thảo \n 2. Thuốc tăng cường thể lực \n 3. Sản phẩm làm đẹp`
       };

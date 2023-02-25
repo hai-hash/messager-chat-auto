@@ -10,9 +10,9 @@ export function handleTextMessage(webhookEvent){
       ) {
         response = genNuxMessage();
       }
-
+      return response;
 }
 
-function  firstEntity(nlp, name) {
+export function  firstEntity(nlp, name) {
     return nlp && nlp.entities && nlp.entities[name] && nlp.entities[name][0];
   }
