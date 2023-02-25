@@ -137,15 +137,15 @@
 
     let curation = genQuickReply("Chúng tôi có thể giúp gì cho bạn nào?", [
       {
-        title: i18n.__("Danh sách sản phẩm"),
+        title: "Danh sách sản phẩm",
         payload: "LISTPRODUCT"
       },
       {
-        title: i18n.__("Trò chuyện với nhân viên"),
+        title: "Trò chuyện với nhân viên",
         payload: "CARE_HELP"
       },
       {
-        title: i18n.__("Kiểm tra trạng thái đơn hàng"),
+        title: "Kiểm tra trạng thái đơn hàng",
         payload: "ORDER_STATUS"
       }
     ]);
