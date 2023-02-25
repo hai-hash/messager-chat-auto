@@ -121,7 +121,7 @@ function handleMessage(senderPsid, webhookEvent) {
     let greeting = firstEntity(webhookEvent.message.nlp, "greetings");
     if (
       (greeting && greeting.confidence > 0.8) ||
-      message.includes("start over")
+      receivedMessage.text.includes("start over")
     ) {
       response = genNuxMessage();
     }
